@@ -1,0 +1,23 @@
+{
+  "name": "bot-bet",
+  "version": "1.0.0",
+  "description": "bot bet",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finaly55/bot-bet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/finaly55/bot-bet/issues"
+  },
+  "homepage": "https://github.com/finaly55/bot-bet#readme",
+  "dependencies": {
+    "selenium-webdriver": "^4.3.0"
+  }
+}
