@@ -1,31 +1,64 @@
-// The sample test script in this section is compatible with JSON wire protocol-based 
-// client bindings. Check out our W3C-based scripts in 
-// the selenium-4 branch of the same repository.
 const webdriver = require('selenium-webdriver');
-const { By } = require('selenium-webdriver');
-const assert = require('assert');
-// Input capabilities
-const capabilities = {
- 'os_version' : '11',
- 'resolution' : '1920x1080',
- 'browserName' : 'Chrome',
- 'browser_version' : 'latest',
- 'os' : 'Windows',
- 'name': 'BStack-[NodeJS] Sample Test', // test name
- 'build': 'BStack Build Number 1' // CI/CD job or build name
+const chrome = require('selenium-webdriver/chrome');
+const chromedriver = require('chromedriver');
+
+chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build());
+
+var chromeOptions = new chrome.Options();
+chromeOptions.addArguments("test-type");
+chromeOptions.addArguments("--js-flags=--expose-gc");
+chromeOptions.addArguments("--enable-precise-memory-info");
+chromeOptions.addArguments("--disable-popup-blocking");
+chromeOptions.addArguments("--disable-default-apps");
+chromeOptions.addArguments("--disable-notifications")
+chromeOptions.addArguments("--disable-infobars");
+chromeOptions.addArguments("--user-data-dir=C:/Users/Julien/AppData/Local/Google/Chrome/User Data/Profile 1");
+
+
+let cotes = []
+
+async function runTestWithCaps() {
+    var driver = new webdriver.Builder().forBrowser("chrome")
+        .setChromeOptions(chromeOptions)
+        .build();
+
+    try {
+        await driver.get("https://www.hltv.org/");
+        try {
+            await driver.findElement(webdriver.By.xpath('//*[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"]')).click()
+        } catch (e) {
+            console.log("cookie déjà accepté")
+        }
+
+        var links = await driver.findElements(webdriver.By.className("hotmatch-box"))
+
+        await links[5].click()
+
+        let cotes1 = await driver.findElements(webdriver.By.css('#betting  table > tbody > tr > td:nth-child(2) > a')).map(async cote=> await cote.getText())
+
+
+        let cotes2 = await driver.findElements(webdriver.By.css('#betting  table > tbody > tr > td:nth-child(4) > a')).map(async cote=> await cote.getText())
+
+        console.log(cotes1)
+        console.log(cotes2)
+
+
+        let cote1Max = Math.max.apply(Math, cotes1);
+        let cote2Max = Math.max.apply(Math, cotes2);
+
+        cotes.push({
+            link: links[5],
+            cote1Max: cote1Max,
+            cote2Max: cote2Max,
+        })
+
+        console.log(cotes)
+
+        await new Promise(resolve => setTimeout(resolve, 3000)); // 3 sec
+
+    } catch (e) {
+        console.log("Error:", e.message)
+    }
+    await driver.quit();
 }
-async function runTestWithCaps () {
-  let driver = new webdriver.Builder().withCapabilities(capabilities).build();
-  try{
-    await driver.get("https://google.com/");
-    
-  } catch(e) {
-    //marking the test as Failed if product has not been added to the cart
-    console.log("Error:", e.message)
-    await driver.executeScript(
-      'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "Some elements failed to load."}}'
-    );
-  }
-  await driver.quit();
-}
-runTestWithCaps(); 
+runTestWithCaps();

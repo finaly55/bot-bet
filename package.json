@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/finaly55/bot-bet#readme",
   "dependencies": {
+    "chromedriver": "^103.0.0",
     "selenium-webdriver": "^4.3.0"
   }
 }
