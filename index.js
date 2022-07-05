@@ -82,10 +82,10 @@ async function runTestWithCaps() {
                 link: linksResult[i],
                 cote1Max: cote1Max,
                 cote2Max: cote2Max,
-                betsure: 1 - (1/cote1Max) + (1/cote2Max)
+                betsure: 1 - ((1/cote1Max) + (1/cote2Max))
             })
         }
-        cotes = cotes.filter(cote => cote.betsure > 0)
+        cotes = cotes.filter(cote => cote.betsure > 0.01)
         console.log(cotes)
 
 
